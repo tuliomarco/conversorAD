@@ -88,24 +88,24 @@ void ssd1306_fill(ssd1306_t *ssd, bool value) {
 
 
 
-void ssd1306_rect(ssd1306_t *ssd, uint8_t top, uint8_t left, uint8_t width, uint8_t height, bool value, bool fill) {
-  for (uint8_t x = left; x < left + width; ++x) {
-    ssd1306_pixel(ssd, x, top, value);
-    ssd1306_pixel(ssd, x, top + height - 1, value);
-  }
-  for (uint8_t y = top; y < top + height; ++y) {
-    ssd1306_pixel(ssd, left, y, value);
-    ssd1306_pixel(ssd, left + width - 1, y, value);
+void ssd1306_rect(ssd1306_t *ssd, uint8_t top, uint8_t left, uint8_t width, uint8_t height, bool value, bool fill, uint8_t thickness) {
+  // Desenha a borda de acordo com a espessura
+  for (uint8_t i = 0; i < thickness; ++i) {
+      ssd1306_hline(ssd, left + i, left + width - 1 - i, top + i, value);              
+      ssd1306_hline(ssd, left + i, left + width - 1 - i, top + height - 1 - i, value); 
+      ssd1306_vline(ssd, left + i, top + i, top + height - 1 - i, value);              
+      ssd1306_vline(ssd, left + width - 1 - i, top + i, top + height - 1 - i, value);  
   }
 
   if (fill) {
-    for (uint8_t x = left + 1; x < left + width - 1; ++x) {
-      for (uint8_t y = top + 1; y < top + height - 1; ++y) {
-        ssd1306_pixel(ssd, x, y, value);
+      for (uint8_t x = left + thickness; x < left + width - thickness; ++x) {
+          for (uint8_t y = top + thickness; y < top + height - thickness; ++y) {
+              ssd1306_pixel(ssd, x, y, value);
+          }
       }
-    }
   }
 }
+
 
 void ssd1306_line(ssd1306_t *ssd, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, bool value) {
     int dx = abs(x1 - x0);
